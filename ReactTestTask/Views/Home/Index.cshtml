@@ -1,14 +1,14 @@
-﻿@model IEnumerable<User>
+﻿@model IEnumerable<UserViewModel>
 @{
     ViewData["Title"] = "Home Page";
 }
 
-@Html.React("UserBox", new
+@Html.React("UserList", new
 {
-    initialData = Model,
-    url = Url.Action("Users"),
-    submitUrl = Url.Action("AddUser"),
-    pollInterval = 2000
+    data = Model,
+    getUrl="Users",
+    postUrl="Users/Edit",
+    pollInterval = 2000,
 })
 <script crossorigin="" src="https://cdnjs.cloudflare.com/ajax/libs/react/16.13.0/umd/react.development.js"></script>
 <script crossorigin="" src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/16.13.0/umd/react-dom.development.js"></script>

@@ -21,13 +21,18 @@ namespace ReactTestTask.Controllers
 
         public IActionResult Index()
         {            
-            return View(_dbContext.Users);
+            List<UserViewModel> users = new List<UserViewModel>();
+            foreach (User user in _dbContext.Users)
+            {
+                users.Add(new UserViewModel(user));
+            }
+            return View(users);
         }
 
         [Route("Users")]
         [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Users()
-        {
+        {            
             List<UserViewModel> users = new List<UserViewModel>();
             foreach(User user in _dbContext.Users)
             {
@@ -36,17 +41,18 @@ namespace ReactTestTask.Controllers
             return Json(users);
         }
 
-        [Route("Users/Add")]
+        [Route("Users/Edit")]
         [HttpPost]
-        public IActionResult AddUser(User user)
-        {
+        public IActionResult EditUsers(List<User> users)
+        {            
             if (ModelState.IsValid)
             {
-                _dbContext.Users.Add(user);
+                _dbContext.Users.UpdateRange(users);
                 _dbContext.SaveChangesAsync();
-                return Content("YES, YES!!!");
+                return Content("Все получилось");
             }
-            return Content("Мы обосрались");
+            
+            return Content("Что-то пошло не так");
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
@@ -56,9 +62,13 @@ namespace ReactTestTask.Controllers
         }
 
         [Route("Metrics")]
-        public IActionResult Metrics()
+        public IActionResult Metrics(int day = 7)
         {
-            return View();
+            List<User> users = _dbContext.Users.ToList();
+            MetricsViewModel viewModel = new MetricsViewModel();
+            viewModel.RollingRetention = RollingRetentionCalculator.CalculateRollingRetention(users, day);
+            viewModel.LifetiemeDistribution = UsersLifetimeCalculator.CalculateUsersLifetimeDistribution(users);
+            return View(viewModel);
         }
     }
 }

@@ -10,7 +10,7 @@ namespace ReactTestTask.Models
         public static int[] CalculateUsersLifetimeDistribution(List<User> users)
         {
             int maxLifetime = (int)users.Max(u => (u.DateLastVisit - u.DateRegestration).TotalDays);
-            int[] distribution = new int[maxLifetime];
+            int[] distribution = new int[maxLifetime+1];
             foreach(User user in users)
             {
                 int lifetime = (int)(user.DateLastVisit - user.DateRegestration).TotalDays;

@@ -4,7 +4,7 @@
             <div>
                 <h3>Метрики</h3>
                 <RollingRetentionMetric retention={this.props.retention} />
-                <LifetimeHistogram />
+                <LifetimeHistogram distribution={this.props.distribution} />
             </div>
         );
     };
@@ -20,9 +20,9 @@ class RollingRetentionMetric extends React.Component {
 
 class LifetimeHistogram extends React.Component {
     render() {
-        const labels = ['2016', '2017', '2018'];
-        const data = [324, 45, 672];
-        const options = { fillColor: '#FFFFFF', strokeColor: '#0000FF' };
+        const labels = Object.keys(this.props.distribution);
+        const data = this.props.distribution;
+        const options = { fillColor: '#0000FF', strokeColor: '#0000FF' };
         return (
             <div>
                 <Histogram

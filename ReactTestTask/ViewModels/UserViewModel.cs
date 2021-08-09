@@ -15,8 +15,8 @@ namespace ReactTestTask.ViewModels
         public UserViewModel(User user)
         {
             UserId = user.UserId;
-            DateRegestration = user.DateRegestration.ToString("dd.MM.yyyy");
-            DateLastVisit = user.DateLastVisit.ToString("dd.MM.yyyy");
+            DateRegestration = user.DateRegestration.ToString("yyyy-MM-dd");
+            DateLastVisit = user.DateLastVisit.ToString("yyyy-MM-dd");
         }
     }
 }
