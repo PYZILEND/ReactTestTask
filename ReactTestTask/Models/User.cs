@@ -13,7 +13,7 @@ namespace ReactTestTask.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int UserId { get; set; }
 
-        [Required]       
+        [Required]
         public DateTime DateRegestration { get; set; }
 
         [Required]

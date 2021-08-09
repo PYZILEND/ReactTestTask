@@ -43,7 +43,7 @@ namespace ReactTestTask.Controllers
 
         [Route("Users/Edit")]
         [HttpPost]
-        public IActionResult EditUsers(List<User> users)
+        public IActionResult EditUsers([FromBody]List<User> users)
         {            
             if (ModelState.IsValid)
             {

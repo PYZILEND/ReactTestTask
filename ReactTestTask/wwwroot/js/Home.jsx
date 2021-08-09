@@ -47,13 +47,15 @@ class UserList extends React.Component {
         super(props);
         this.state = { data: this.props.data };
         this.handleUsersSubmit = this.handleUsersSubmit.bind(this);
+        this.onDateRegestrationChange = this.onDateRegestrationChange.bind(this);
+        this.onDateLastVisitChange = this.onDateLastVisitChange.bind(this)
     }
 
     onDateRegestrationChange(value, index) {
         var items = [...this.state.data];
         var item = { ...items[index] };
         item.dateRegestration = value;
-        items[index] = user;
+        items[index] = item;
         this.setState({ data: items });
     }
 
@@ -68,20 +70,16 @@ class UserList extends React.Component {
     handleUsersSubmit(e) {
         e.preventDefault();
 
-        
-                /*
-        data.append('UserId', user.UserId);
-        data.append('DateRegestration', user.DateRegestration);
-        data.append('DateLastVisit', user.DateLastVisit);
+        const dataJSON = JSON.stringify(this.state.data);
 
         const xhr = new XMLHttpRequest();
-        xhr.open('post', this.props.submitUrl, true);
-        xhr.onload = () => this.loadUsersFromServer();
-        xhr.send(data);*/
+        xhr.open('post', this.props.postUrl, true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.send(dataJSON);
     }
 
     render() {
-        var index = 0;
+        var index = 0;        
         return (
             <div className="userList">
                 <form onSubmit={this.handleUsersSubmit}>
@@ -96,12 +94,13 @@ class UserList extends React.Component {
                         <tbody>
                             {this.state.data.map(userData => (
                                 <User
-                                    key={index++}
+                                    key={index}
+                                    itemIndex={index++}
                                     userId={userData.userId}
                                     dateRegestration={userData.dateRegestration}
                                     dateLastVisit={userData.dateLastVisit}
                                     onDateLastVisitChange={this.onDateLastVisitChange}
-                                    onDateRegestrationChange= {this.onDateRegestrationChange}
+                                    onDateRegestrationChange={this.onDateRegestrationChange}
                                 />
                             ))}
                         </tbody>
@@ -114,22 +113,19 @@ class UserList extends React.Component {
 }
 
 class User extends React.Component {
-    /*
+    
     constructor(props) {
         super(props);
-        this.state = {
-            userId: this.props.userId,
-            dateRegestration: this.props.dateRegestration,
-            dateLastVisit: this.props.dateLastVisit
-        };
-    }*/
+        this.handleDateRegestrationChange = this.handleDateRegestrationChange.bind(this);
+        this.handleDateLastVisitChange = this.handleDateLastVisitChange.bind(this);
+    }
 
     handleDateRegestrationChange(e) {
         /*
         this.setState({
                 dateRegestration: e.target.value
              });*/
-        this.onDateRegestrationChange(e.target.value, this.props.key);
+        this.props.onDateRegestrationChange(e.target.value, this.props.itemIndex);
     }
 
     handleDateLastVisitChange(e) {
@@ -137,7 +133,7 @@ class User extends React.Component {
         this.setState({
             dateLastVisit: e.target.value
         });*/
-    this.onDateLastVisitChange(e.target.value, this.props.key);
+        this.props.onDateLastVisitChange(e.target.value, this.props.itemIndex);
     }
 
     render() {
