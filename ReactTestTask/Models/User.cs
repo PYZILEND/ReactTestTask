@@ -17,7 +17,7 @@ namespace ReactTestTask.Models
         public DateTime DateRegestration { get; set; }
 
         [Required]
-        [LaterThan("DateRegestration")]
+        [LaterOrEqualThan("DateRegestration")]
         public DateTime DateLastVisit { get; set; }
     }
 }

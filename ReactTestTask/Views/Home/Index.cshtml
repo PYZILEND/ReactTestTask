@@ -1,16 +1,25 @@
-﻿@model IEnumerable<UserViewModel>
+﻿@model HomeViewModel
 @{
     ViewData["Title"] = "Home Page";
 }
 
 @Html.React("UserList", new
 {
-    data = Model,
-    getUrl="Users",
-    postUrl="Users/Edit",
+    data = Model.Users,
+    getUrl = "Users",
+    postUrl = "Users/Edit",
     pollInterval = 2000,
+})
+<br/>
+@Html.React("Metrics", new
+{
+    retention = Model.RollingRetention,
+    distribution = Model.LifetiemeDistribution,
+    getMetricsUrl = "Metrics"
 })
 <script crossorigin="" src="https://cdnjs.cloudflare.com/ajax/libs/react/16.13.0/umd/react.development.js"></script>
 <script crossorigin="" src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/16.13.0/umd/react-dom.development.js"></script>
 <script src="@Url.Content("~/js/Home.jsx")"></script>
+<script src="@Url.Content("~/js/histogram.jsx")"></script>
+<script src="@Url.Content("~/js/Metrics.jsx")"></script>
 @Html.ReactInitJavaScript()

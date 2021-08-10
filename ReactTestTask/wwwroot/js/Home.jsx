@@ -46,22 +46,25 @@ class UserList extends React.Component {
     constructor(props) {
         super(props);
         this.state = { data: this.props.data };
+        this.state.data.forEach((data) => {
+            data.isValid = true;
+        });
         this.handleUsersSubmit = this.handleUsersSubmit.bind(this);
         this.onDateRegestrationChange = this.onDateRegestrationChange.bind(this);
         this.onDateLastVisitChange = this.onDateLastVisitChange.bind(this)
     }
 
     onDateRegestrationChange(value, index) {
-        var items = [...this.state.data];
-        var item = { ...items[index] };
+        let items = [...this.state.data];
+        let item = { ...items[index] };
         item.dateRegestration = value;
         items[index] = item;
         this.setState({ data: items });
     }
 
     onDateLastVisitChange(value, index) {
-        var items = [...this.state.data];
-        var item = { ...items[index] };
+        let items = [...this.state.data];
+        let item = { ...items[index] };
         item.dateLastVisit = value;
         items[index] = item;
         this.setState({ data: items });
@@ -75,6 +78,17 @@ class UserList extends React.Component {
         const xhr = new XMLHttpRequest();
         xhr.open('post', this.props.postUrl, true);
         xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.onload = () => {
+            const response = JSON.parse(xhr.responseText);            
+            for (var i = 0; i < this.state.data.length; i++)
+            {
+                let items = [...this.state.data];
+                let item = { ...items[i] };
+                item.isValid = response.validityIndexes[i];
+                items[i] = item;
+                this.setState({ data: items });
+            }
+        }
         xhr.send(dataJSON);
     }
 
@@ -99,13 +113,14 @@ class UserList extends React.Component {
                                     userId={userData.userId}
                                     dateRegestration={userData.dateRegestration}
                                     dateLastVisit={userData.dateLastVisit}
+                                    isValid={userData.isValid}
                                     onDateLastVisitChange={this.onDateLastVisitChange}
                                     onDateRegestrationChange={this.onDateRegestrationChange}
                                 />
                             ))}
                         </tbody>
                     </table>
-                    <input type="submit" value="Post"/>
+                    <input type="submit" value="Save"/>
                 </form>
             </div>
         );
@@ -121,18 +136,10 @@ class User extends React.Component {
     }
 
     handleDateRegestrationChange(e) {
-        /*
-        this.setState({
-                dateRegestration: e.target.value
-             });*/
         this.props.onDateRegestrationChange(e.target.value, this.props.itemIndex);
     }
 
     handleDateLastVisitChange(e) {
-        /*
-        this.setState({
-            dateLastVisit: e.target.value
-        });*/
         this.props.onDateLastVisitChange(e.target.value, this.props.itemIndex);
     }
 
@@ -143,11 +150,29 @@ class User extends React.Component {
                     {this.props.userId}
                 </td>
                 <td>
-                    <input type="date" value={this.props.dateRegestration} onChange={this.handleDateRegestrationChange} />
+                    <input
+                        type="date"
+                        value={this.props.dateRegestration}
+                        onChange={this.handleDateRegestrationChange}
+                    />
                 </td>
                 <td>
-                    <input type="date" value={this.props.dateLastVisit} onChange={this.handleDateLastVisitChange} />
+                    <input
+                        type="date"
+                        id={"LastVisitDate" + this.props.userId}
+                        name={"LastVisitDate" + this.props.userId}
+                        value={this.props.dateLastVisit}
+                        onChange={this.handleDateLastVisitChange}
+                    />
                 </td>
+                                  
+                {
+                    this.props.isValid == false &&
+                    <td className="noBorderCell">  
+                    <span>Значение Date Last VIsit должно быть позднее Date Regestration</span>
+                    </td>
+                }
+                
             </tr>
         );
     }

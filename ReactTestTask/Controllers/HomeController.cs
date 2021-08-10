@@ -7,12 +7,14 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using ReactTestTask.Models;
 using ReactTestTask.ViewModels;
+using System.Text.RegularExpressions;
 
 namespace ReactTestTask.Controllers
 {
     public class HomeController : Controller
     {
         private PostgreSQLContext _dbContext;
+        const int RollingRetentionDay = 7;
 
         public HomeController(PostgreSQLContext dbContext)
         {
@@ -20,13 +22,10 @@ namespace ReactTestTask.Controllers
         }
 
         public IActionResult Index()
-        {            
-            List<UserViewModel> users = new List<UserViewModel>();
-            foreach (User user in _dbContext.Users)
-            {
-                users.Add(new UserViewModel(user));
-            }
-            return View(users);
+        {
+            List<User> users = _dbContext.Users.ToList();
+            HomeViewModel viewModel = new HomeViewModel(users, RollingRetentionDay);
+            return View(viewModel);
         }
 
         [Route("Users")]
@@ -44,15 +43,28 @@ namespace ReactTestTask.Controllers
         [Route("Users/Edit")]
         [HttpPost]
         public IActionResult EditUsers([FromBody]List<User> users)
-        {            
+        {
+            bool[] validityIndexes = new bool[users.Count];
+            for (int i = 0; i < validityIndexes.Length; i++)
+            {
+                validityIndexes[i] = true;
+            }
+
             if (ModelState.IsValid)
             {
                 _dbContext.Users.UpdateRange(users);
-                _dbContext.SaveChangesAsync();
-                return Content("Все получилось");
+                _dbContext.SaveChanges();
+                return Json(new { success = true, validityIndexes = validityIndexes });
             }
-            
-            return Content("Что-то пошло не так");
+            else
+            {                
+                foreach (var key in ModelState.Keys)
+                {
+                    string keyIndex = Regex.Match(key, "(?<=\\[)\\d*(?=\\])").Value;
+                    validityIndexes[int.Parse(keyIndex)] = false;
+                }                
+                return Json(new { success = false, validityIndexes = validityIndexes });
+            }
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
@@ -61,14 +73,14 @@ namespace ReactTestTask.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
+        
         [Route("Metrics")]
-        public IActionResult Metrics(int day = 7)
+        public IActionResult Metrics()
         {
             List<User> users = _dbContext.Users.ToList();
-            MetricsViewModel viewModel = new MetricsViewModel();
-            viewModel.RollingRetention = RollingRetentionCalculator.CalculateRollingRetention(users, day);
-            viewModel.LifetiemeDistribution = UsersLifetimeCalculator.CalculateUsersLifetimeDistribution(users);
-            return View(viewModel);
+            int rollingRetention = RollingRetentionCalculator.CalculateRollingRetention(users, RollingRetentionDay);
+            int[] lifetiemeDistribution = UsersLifetimeCalculator.CalculateUsersLifetimeDistribution(users);
+            return Json(new { rollingRetention = rollingRetention, lifetiemeDistribution = lifetiemeDistribution});
         }
     }
 }

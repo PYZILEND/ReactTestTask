@@ -7,11 +7,11 @@ using System.ComponentModel.DataAnnotations;
 namespace ReactTestTask.Models
 {
     [AttributeUsage(AttributeTargets.Property)]
-    public class LaterThanAttribute:ValidationAttribute
+    public class LaterOrEqualThanAttribute:ValidationAttribute
     {
         string OtherDateFieldName { get; set; }
 
-        public LaterThanAttribute(string otherDateFieldName)
+        public LaterOrEqualThanAttribute(string otherDateFieldName)
         {
             OtherDateFieldName = otherDateFieldName;
         }
@@ -20,7 +20,7 @@ namespace ReactTestTask.Models
             DateTime laterDate = (DateTime)value;
             DateTime earlyerDate = (DateTime)context.ObjectType.GetProperty(OtherDateFieldName).GetValue(context.ObjectInstance, null);
 
-            if (laterDate > earlyerDate)
+            if (laterDate >= earlyerDate)
             {
                 return ValidationResult.Success;
             }

@@ -1,10 +1,27 @@
-﻿class Metrics extends React.Component {    
+﻿class Metrics extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = { retention : this.props.retention, distribution:this.props.distribution };
+        this.onCalculateButtonClick = this.onCalculateButtonClick.bind(this);
+    }
+
+    onCalculateButtonClick() {
+        const xhr = new XMLHttpRequest();
+        xhr.open('get', this.props.getMetricsUrl, true);
+        xhr.onload = () => {
+            const data = JSON.parse(xhr.responseText);
+            this.setState({ retention: data.rollingRetention, distribution: data.lifetiemeDistribution });
+        };
+        xhr.send();
+    }
+
     render() {
         return (
             <div>
                 <h3>Метрики</h3>
-                <RollingRetentionMetric retention={this.props.retention} />
-                <LifetimeHistogram distribution={this.props.distribution} />
+                <button onClick={this.onCalculateButtonClick}>Calculate</button>
+                <RollingRetentionMetric retention={this.state.retention} />
+                <LifetimeHistogram distribution={this.state.distribution} />
             </div>
         );
     };
@@ -13,7 +30,7 @@
 class RollingRetentionMetric extends React.Component {
     render() {
         return (
-            <h3>Rolling retention: {this.props.retention}</h3>
+            <h4>Rolling retention 7 day: {this.props.retention}%</h4>
         );
     }
 }
@@ -25,6 +42,7 @@ class LifetimeHistogram extends React.Component {
         const options = { fillColor: '#0000FF', strokeColor: '#0000FF' };
         return (
             <div>
+                <h4>Распределение длительностей жизней пользователей</h4>
                 <Histogram
                     xLabels={labels}
                     yValues={data}
