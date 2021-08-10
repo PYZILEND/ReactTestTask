@@ -5,11 +5,6 @@ for details on configuring this project to bundle and minify static web assets. 
     color: #b94a48;
 }
 
-/*
-.field-validation-valid {
-    display: none;
-}*/
-
 input.input-validation-error {
     border: 1px solid #b94a48;
 }
@@ -17,16 +12,10 @@ input.input-validation-error {
 .validation-summary-errors {
     color: #b94a48;
 }
-/*
-.validation-summary-valid {
-    display: none;
-}*/
 
 table.userListTable td {
     border-bottom: 0.5px solid rgba(93, 110, 151, 0.4);
 }
-
-
 
 table.userListTable tr th {
     padding: 5px 5px 5px 20px;

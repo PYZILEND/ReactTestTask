@@ -26,7 +26,7 @@ namespace ReactTestTask.Models
             }
             else
             {
-                return new ValidationResult("Date is not later");
+                return new ValidationResult("Date is earlier");
             }
         }
     }

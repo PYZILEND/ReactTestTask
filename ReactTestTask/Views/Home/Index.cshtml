@@ -1,13 +1,13 @@
 ﻿@model HomeViewModel
 @{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Что-то ужасное";
 }
 
 @Html.React("UserList", new
 {
     data = Model.Users,
-    getUrl = "Users",
-    postUrl = "Users/Edit",
+    getUrl = "Home/GetUsers",
+    postUrl = "Home/PostUsers",
     pollInterval = 2000,
 })
 <br/>
@@ -15,7 +15,7 @@
 {
     retention = Model.RollingRetention,
     distribution = Model.LifetiemeDistribution,
-    getMetricsUrl = "Metrics"
+    getMetricsUrl = "Home/GetMetrics"
 })
 <script crossorigin="" src="https://cdnjs.cloudflare.com/ajax/libs/react/16.13.0/umd/react.development.js"></script>
 <script crossorigin="" src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/16.13.0/umd/react-dom.development.js"></script>

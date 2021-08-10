@@ -12,11 +12,6 @@ namespace ReactTestTask.ViewModels
         public string DateRegestration { get; set; }
         public string DateLastVisit { get; set; }
 
-        public UserViewModel()
-        {
-
-        }
-
         public UserViewModel(User user)
         {
             UserId = user.UserId;

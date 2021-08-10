@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using System.Configuration;
 
 namespace ReactTestTask.Models
 {
@@ -13,11 +14,6 @@ namespace ReactTestTask.Models
         public PostgreSQLContext(DbContextOptions options) :base(options)
         {
             Database.EnsureCreated();
-        }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=ReactDB;Username=postgres;Password=12345");
         }
     }
 }

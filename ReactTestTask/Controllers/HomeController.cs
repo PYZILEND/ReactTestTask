@@ -28,9 +28,8 @@ namespace ReactTestTask.Controllers
             return View(viewModel);
         }
 
-        [Route("Users")]
         [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Users()
+        public IActionResult GetUsers()
         {            
             List<UserViewModel> users = new List<UserViewModel>();
             foreach(User user in _dbContext.Users)
@@ -40,9 +39,8 @@ namespace ReactTestTask.Controllers
             return Json(users);
         }
 
-        [Route("Users/Edit")]
         [HttpPost]
-        public IActionResult EditUsers([FromBody]List<User> users)
+        public IActionResult PostUsers([FromBody]List<User> users)
         {
             bool[] validityIndexes = new bool[users.Count];
             for (int i = 0; i < validityIndexes.Length; i++)
@@ -66,16 +64,8 @@ namespace ReactTestTask.Controllers
                 return Json(new { success = false, validityIndexes = validityIndexes });
             }
         }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
-
         
-        [Route("Metrics")]
-        public IActionResult Metrics()
+        public IActionResult GetMetrics()
         {
             List<User> users = _dbContext.Users.ToList();
             int rollingRetention = RollingRetentionCalculator.CalculateRollingRetention(users, RollingRetentionDay);
