@@ -18,7 +18,7 @@ namespace ReactTestTask.Controllers
 
         public HomeController(PostgreSQLContext dbContext)
         {
-            _dbContext = dbContext;
+            _dbContext = dbContext;           
         }
 
         public IActionResult Index()

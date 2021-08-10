@@ -1,0 +1,21 @@
+services:
+  react:
+    depends_on: 
+      - "postgres"
+    container_name: react
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports: 
+      - "5000:5000"
+
+  postgres:
+    image: "postgres"
+    container_name: "postgres"
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=12345
+      - POSTGRES_DB=ReactDB
+    ports: 
+      - "5435:5432"
