@@ -20,6 +20,10 @@ namespace ReactTestTask
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
+                    var port = Environment.GetEnvironmentVariable("PORT");
+
+                    webBuilder.UseUrls($"http://+:{port}");
+
                     webBuilder.UseStartup<Startup>();
                 });
     }

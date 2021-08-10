@@ -14,5 +14,4 @@ WORKDIR /app
 COPY --from=build-env /app/out .
 
 EXPOSE 5000
-ENV ASPNETCORE_URLS http://*:5000
-ENTRYPOINT ["dotnet", "ReactTestTask.dll"]
+CMD ASPNETCORE\_URLS=http://\*:$PORT dotnet ReactTestTask.dll 
