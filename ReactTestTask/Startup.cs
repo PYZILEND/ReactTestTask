@@ -28,9 +28,12 @@ namespace ReactTestTask
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            string connectionString = Configuration.GetConnectionString("PostgreSQLConnectionString");
+            string databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
+            Uri databaseUri = new Uri(databaseUrl);
+            string db = databaseUri.LocalPath.TrimStart('/');
+            string[] userInfo = databaseUri.UserInfo.Split(':', StringSplitOptions.RemoveEmptyEntries);
             services.AddDbContext<PostgreSQLContext>(options =>
-                options.UseNpgsql(connectionString)
+                options.UseNpgsql($"User ID={userInfo[0]};Password={userInfo[1]};Host={databaseUri.Host};Port={databaseUri.Port};Database={db};Pooling=true;SSL Mode=Require;Trust Server Certificate=True;")
             );
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();

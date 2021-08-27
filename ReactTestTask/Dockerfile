@@ -1,4 +1,6 @@
 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build-env
+EXPOSE 80
+EXPOSE 443
 RUN mkdir /app
 WORKDIR /app
 
@@ -12,6 +14,4 @@ FROM mcr.microsoft.com/dotnet/core/sdk:3.1
 
 WORKDIR /app
 COPY --from=build-env /app/out .
-
-EXPOSE 5000
-CMD ASPNETCORE\_URLS=http://\*:$PORT dotnet ReactTestTask.dll 
+CMD ["dotnet", "ReactTestTask.dll"]
